@@ -1,0 +1,47 @@
+---
+    title: "Report_1"
+    author: "Eliser Romero"
+    date: "09-03-2023"
+    output: pdf_document 
+---
+
+```{r}
+library(tidyverse)
+air <- read.delim("air.txt", header=FALSE, sep="")
+air
+```
+
+Changing Headers:
+
+```{r}
+headers <- c("Airline", "Length of flight", "Speed of Plane", "Daily Flight Time per plane", "Population served", "Total Operating Cost", "Revenue Tons per Aircraft mile", "Ton-Mile load factor", "Available Capacity", "Total Assets", "Investments and Special Funds", "Adjusted Assets")
+colnames(air) <- headers
+features <- headers[-1]
+air
+
+```
+
+Summary of data:
+
+```{r}
+summarize(air)
+```
+
+Plotting distribution of all features:
+
+```{r}
+hist(air$`Length of flight`)
+```
+
+Regularize the data:
+
+```{r}
+scale_data <- as.data.frame(scale(air[features]))
+scale_data
+```
+
+Start regression:
+
+```{r}
+
+```
