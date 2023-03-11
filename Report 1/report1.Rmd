@@ -30,14 +30,49 @@ summarize(air)
 Plotting distribution of all features:
 
 ```{r}
-hist(air$`Length of flight`)
+#install.packages("gridExtra")
+library(gridExtra)
+# Create a list of ggplot objects for each column
+for (col in features) {
+  
+  # Create a ggplot object with the current column
+  dist <- ggplot(air, aes(x = get(col))) +
+    
+    # Add a histogram or density layer depending on your preference
+    geom_histogram() +
+    #geom_density() +
+    
+    # Add labels and a title with the current column name
+    labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
+  print(dist)
+}
+
+#a faire en log?
 ```
 
 Regularize the data:
 
 ```{r}
-scale_data <- as.data.frame(scale(air[features]))
-scale_data
+scale_air <- as.data.frame(scale(air[features]))
+scale_air
+```
+
+Plot distribution after scaling:
+
+```{r}
+for (col in features) {
+  
+  # Create a ggplot object with the current column
+  dist <- ggplot(scale_air, aes(x = get(col))) +
+    
+    # Add a histogram or density layer depending on your preference
+    geom_histogram() +
+    #geom_density() +
+    
+    # Add labels and a title with the current column name
+    labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
+  print(dist)
+}
 ```
 
 Start regression:
