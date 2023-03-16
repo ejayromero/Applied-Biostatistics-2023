@@ -44,6 +44,7 @@ for (col in features) {
     
     # Add labels and a title with the current column name
     labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
+    scale_x_log10()
   print(dist)
 }
 
@@ -53,8 +54,8 @@ for (col in features) {
 Regularize the data:
 
 ```{r}
-scale_air <- as.data.frame(scale(air[features]))
-scale_air
+normalize_air <- as.data.frame(scale(air[features], center = FALSE, scale = apply(air[features], 2, max) - apply(air[features], 2, min)))
+normalize_air
 ```
 
 Plot distribution after scaling:
@@ -63,7 +64,7 @@ Plot distribution after scaling:
 for (col in features) {
   
   # Create a ggplot object with the current column
-  dist <- ggplot(scale_air, aes(x = get(col))) +
+  dist <- ggplot(normalize_air, aes(x = get(col))) +
     
     # Add a histogram or density layer depending on your preference
     geom_histogram() +
@@ -71,6 +72,7 @@ for (col in features) {
     
     # Add labels and a title with the current column name
     labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
+    
   print(dist)
 }
 ```
@@ -78,5 +80,18 @@ for (col in features) {
 Start regression:
 
 ```{r}
+# Perform linear regression on air
+model <- lm(`Revenue Tons per Aircraft mile` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = air)
 
+# Print the summary of the model
+summary(model)
+
+```
+
+```{r}
+# Perform linear regression on scale_air
+model_normalize <- lm(`Revenue Tons per Aircraft mile` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = normalize_air)
+
+# Print the summary of the model
+summary(model_normalize)
 ```
