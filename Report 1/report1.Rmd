@@ -95,3 +95,31 @@ model_normalize <- lm(`Revenue Tons per Aircraft mile` ~ `Available Capacity`+ `
 # Print the summary of the model
 summary(model_normalize)
 ```
+
+```{r}
+#collect data
+air <- read.delim("\\Users\\easy\\Documents\\Vie_étudiante\\EPFL\\MA2\\Applied_biostatistics\\Assignment1\\air.txt", header=FALSE, sep="")
+air.df <- as.data.frame(air) 
+colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
+air.df
+
+#normalization with log on all the columns
+air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "LoadFactor", "AvailableTons")] <- log(as.data.frame(air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "LoadFactor", "AvailableTons")]))
+air.df
+model <- lm(Cost ~ AvailableTons + Length + LoadFactor + DailyTime + Population + Speed + Assets, data = air.df)
+summary(model)
+```
+
+```{r}
+#collect data
+air <- read.delim("\\Users\\easy\\Documents\\Vie_étudiante\\EPFL\\MA2\\Applied_biostatistics\\Assignment1\\air.txt", header=FALSE, sep="")
+air.df <- as.data.frame(air) 
+colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
+air.df
+
+#normalization with log on all the columns but load factor
+air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "AvailableTons")] <- log(as.data.frame(air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "AvailableTons")]))
+air.df
+model <- lm(Cost ~ AvailableTons + Length + LoadFactor + DailyTime + Population + Speed + Assets, data = air.df)
+summary(model)
+```
