@@ -24,7 +24,7 @@ air
 Summary of data:
 
 ```{r}
-summarize(air)
+summarize(air[features])
 ```
 
 Plotting distribution of all features:
@@ -49,6 +49,32 @@ for (col in features) {
 }
 
 #a faire en log?
+```
+
+Checking correlation:
+
+```{r}
+# correlation matrix
+res <- cor(air[features])
+round(res, 2)
+
+#correlation plot
+#install.packages("corrplot")
+library(corrplot)
+
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45, diag = FALSE)
+
+#heatmap
+# Get some colors
+col<- colorRampPalette(c("blue", "white", "red"))(20)
+heatmap(x = res, col = col, symm = TRUE)
+
+# complete analytic plot i.e. correlation, significance, distribution, 2D linear plot features to features
+#install.packages("PerformanceAnalytics")
+
+library("PerformanceAnalytics")
+chart.Correlation(air[features], histogram=TRUE, pch=19)
 ```
 
 Regularize the data:
