@@ -103,6 +103,13 @@ for (col in features) {
 }
 ```
 
+Boxplots distribution:
+
+```{r}
+boxplot(normalize_air[features], las= 2)
+
+```
+
 Start regression:
 
 ```{r}
