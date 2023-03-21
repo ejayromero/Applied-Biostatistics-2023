@@ -1,6 +1,6 @@
 ---
     title: "Report_1"
-    author: "Eliser Romero"
+    author: "Eliser Romero & "
     date: "09-03-2023"
     output: pdf_document 
 ---
@@ -17,6 +17,9 @@ Changing Headers:
 headers <- c("Airline", "Length of flight", "Speed of Plane", "Daily Flight Time per plane", "Population served", "Total Operating Cost", "Revenue Tons per Aircraft mile", "Ton-Mile load factor", "Available Capacity", "Total Assets", "Investments and Special Funds", "Adjusted Assets")
 colnames(air) <- headers
 features <- headers[-1]
+X <- features[-5]
+Y <- "Total Operation Cost"
+
 air
 
 ```
@@ -44,11 +47,34 @@ for (col in features) {
     
     # Add labels and a title with the current column name
     labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
-    scale_x_log10()
+    #scale_x_log10() #a faire en log?
   print(dist)
 }
 
-#a faire en log?
+
+```
+
+Plotting features VS Total Operation Cost
+
+```{r}
+for (col in X) {
+  
+  # Create a ggplot object with the current column
+  fig <- ggplot(air, aes(x = get(col), y= Y)) +
+    
+    # Add a histogram or density layer depending on your preference
+    geom_point() +
+    #geom_density() +
+    
+    # Add labels and a title with the current column name
+    #labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
+    #scale_x_log10() #a faire en log?
+  print(fig)
+}
+```
+
+```{r}
+plot(air[features])
 ```
 
 Checking correlation:
@@ -62,7 +88,7 @@ round(res, 2)
 #install.packages("corrplot")
 library(corrplot)
 
-corrplot(res, type = "upper", order = "hclust", 
+corrplot(res, type = "upper", addCoef.col = 1, number.cex = 0.5,order = "hclust", 
          tl.col = "black", tl.srt = 45, diag = FALSE)
 
 #heatmap
@@ -131,7 +157,7 @@ summary(model_normalize)
 
 ```{r}
 #collect data
-air <- read.delim("\\Users\\easy\\Documents\\Vie_étudiante\\EPFL\\MA2\\Applied_biostatistics\\Assignment1\\air.txt", header=FALSE, sep="")
+air <- read.delim("air.txt", header=FALSE, sep="")
 air.df <- as.data.frame(air) 
 colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
 air.df
@@ -145,7 +171,7 @@ summary(model)
 
 ```{r}
 #collect data
-air <- read.delim("\\Users\\easy\\Documents\\Vie_étudiante\\EPFL\\MA2\\Applied_biostatistics\\Assignment1\\air.txt", header=FALSE, sep="")
+air <- read.delim("air.txt", header=FALSE, sep="")
 air.df <- as.data.frame(air) 
 colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
 air.df
