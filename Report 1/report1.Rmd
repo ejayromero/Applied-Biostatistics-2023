@@ -19,7 +19,7 @@ colnames(air) <- headers
 features <- headers[-1]
 X <- features[-5]
 Y <- "Total Operation Cost"
-
+X_interest <- c("Total Operating Cost", "Available Capacity" , "Length of flight", "Ton-Mile load factor", "Daily Flight Time per plane","Population served", "Speed of Plane" , "Total Assets")
 air
 
 ```
@@ -27,7 +27,34 @@ air
 Summary of data:
 
 ```{r}
-summarize(air[features])
+summary(air[X_interest])
+```
+
+Reshape data for plot
+
+```{r}
+#install.packages("reshape2")
+library(reshape2)
+library(ggplot2)
+library(gridExtra)
+
+# Melt the dataframe to long format
+melted_air <- melt(air[X_interest], id.vars = "Total Operating Cost")
+
+# Create a list of ggplot objects for each column
+for (col in X) {
+  
+  # Create a ggplot object with the current column
+  plot <- ggplot(melted_air[melted_air$variable == col, ], aes(x = value, y = Y)) +
+    
+    # Add a histogram or density layer depending on your preference
+    geom_point() +
+    
+    # Add labels and a title with the current column name
+    labs(x = col, y = "Cost", title = paste("Plot of", col, " vs Cost in air"))
+    #scale_x_log10() #a faire en log?
+  print(plot)
+}
 ```
 
 Plotting distribution of all features:
@@ -74,7 +101,7 @@ for (col in X) {
 ```
 
 ```{r}
-plot(air[features])
+plot(air[X_interest])
 ```
 
 Checking correlation:
@@ -101,6 +128,8 @@ heatmap(x = res, col = col, symm = TRUE)
 
 library("PerformanceAnalytics")
 chart.Correlation(air[features], histogram=TRUE, pch=19)
+
+chart.Correlation(air[X_interest], histogram=TRUE, pch=19)
 ```
 
 Regularize the data:
@@ -140,7 +169,7 @@ Start regression:
 
 ```{r}
 # Perform linear regression on air
-model <- lm(`Revenue Tons per Aircraft mile` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = air)
+model <- lm(`Total Operating Cost` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = air)
 
 # Print the summary of the model
 summary(model)
@@ -149,7 +178,7 @@ summary(model)
 
 ```{r}
 # Perform linear regression on scale_air
-model_normalize <- lm(`Revenue Tons per Aircraft mile` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = normalize_air)
+model_normalize <- lm(`Total Operating Cost` ~ `Available Capacity`+ `Length of flight` + `Ton-Mile load factor` +`Daily Flight Time per plane` +`Population served` + `Speed of Plane` + `Total Assets` , data = normalize_air)
 
 # Print the summary of the model
 summary(model_normalize)
