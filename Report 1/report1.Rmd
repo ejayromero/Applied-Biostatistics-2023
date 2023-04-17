@@ -41,22 +41,7 @@ library(gridExtra)
 # Melt the dataframe to long format
 melted_air <- melt(air[X_interest], id.vars = "Total Operating Cost")
 
-# Create a list of ggplot objects for each column
-for (col in X) {
-  
-  # Create a ggplot object with the current column
-  plot <- ggplot(melted_air[melted_air$variable == col, ], aes(x = value, y = Y)) +
-    
-    # Add a histogram or density layer depending on your preference
-    geom_point() +
-    
-    # Add labels and a title with the current column name
-    labs(x = col, y = "Cost", title = paste("Plot of", col, " vs Cost in air"))
-    #scale_x_log10() #a faire en log?
-  print(plot)
-}
 ```
-
 Plotting distribution of all features:
 
 ```{r}
@@ -82,23 +67,6 @@ for (col in features) {
 ```
 
 Plotting features VS Total Operation Cost
-
-```{r}
-for (col in X) {
-  
-  # Create a ggplot object with the current column
-  fig <- ggplot(air, aes(x = get(col), y= Y)) +
-    
-    # Add a histogram or density layer depending on your preference
-    geom_point() +
-    #geom_density() +
-    
-    # Add labels and a title with the current column name
-    #labs(x = col, y = "Frequency", title = paste("Distribution of", col, "in air"))
-    #scale_x_log10() #a faire en log?
-  print(fig)
-}
-```
 
 ```{r}
 plot(air[X_interest])
@@ -183,31 +151,19 @@ model_normalize <- lm(`Total Operating Cost` ~ `Available Capacity`+ `Length of 
 # Print the summary of the model
 summary(model_normalize)
 ```
-
-```{r}
-#collect data
-air <- read.delim("air.txt", header=FALSE, sep="")
-air.df <- as.data.frame(air) 
-colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
-air.df
-
-#normalization with log on all the columns
-air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "LoadFactor", "AvailableTons")] <- log(as.data.frame(air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "LoadFactor", "AvailableTons")]))
-air.df
-model <- lm(Cost ~ AvailableTons + Length + LoadFactor + DailyTime + Population + Speed + Assets, data = air.df)
-summary(model)
-```
-
-```{r}
-#collect data
-air <- read.delim("air.txt", header=FALSE, sep="")
-air.df <- as.data.frame(air) 
-colnames(air.df) = c("Companies","Length", "Speed", "DailyTime", "Population", "Cost","Assets", "LoadFactor" , "AvailableTons")
-air.df
-
+``` {r}
 #normalization with log on all the columns but load factor
-air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "AvailableTons")] <- log(as.data.frame(air.df[ , c("Length", "Speed", "DailyTime", "Population", "Cost","Assets" , "AvailableTons")]))
-air.df
-model <- lm(Cost ~ AvailableTons + Length + LoadFactor + DailyTime + Population + Speed + Assets, data = air.df)
+air.df <- as.data.frame(air) 
+#air.df
+air.df[ , c("Length of flight", "Speed of Plane", "Daily Flight Time per plane", "Population served", "Total Operating Cost","Total Assets" , "Available Capacity")] <- log(as.data.frame(air.df[ , c("Length of flight", "Speed of Plane", "Daily Flight Time per plane", "Population served", "Total Operating Cost","Total Assets" , "Available Capacity")]))
+#air.df
+air.df$`Total Assets` <- air.df$`Total Assets`*0.1
+model <- lm(`Total Operating Cost` ~ `Available Capacity` + `Length of flight` + `Ton-Mile load factor` + `Daily Flight Time per plane` + `Population served` + `Speed of Plane` + `Total Assets`, data = air.df)
+summary(model)
+
+air.df[ , c("Ton-Mile load factor")] <- log(as.data.frame(air.df[ , c("Ton-Mile load factor")]))
+#air.df
+air.df$`Total Assets` <- air.df$`Total Assets`*0.1
+model <- lm(`Total Operating Cost` ~ `Available Capacity` + `Length of flight` + `Ton-Mile load factor` + `Daily Flight Time per plane` + `Population served` + `Speed of Plane` + `Total Assets`, data = air.df)
 summary(model)
 ```
